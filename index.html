@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TransitKita - Informasi Transportasi</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: #0f766e;
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #a7f3d0;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #a7f3d0;
+        }
+
+        /* PAGE */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            color: white;
+            padding: 70px 8% 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 35px;
+        }
+
+        /* SEARCH */
+        .search-box {
+            background: white;
+            max-width: 900px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            color: #333;
+        }
+
+        .search-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            background: #0f766e;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #115e59;
+            transform: translateY(-2px);
+        }
+
+        button:focus {
+            outline: 3px solid #5eead4;
+            outline-offset: 2px;
+        }
+
+        /* CONTENT */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 50px 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title h2 {
+            font-size: 30px;
+            color: #0f766e;
+            margin-bottom: 10px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card {
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card .icon {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #0f766e;
+        }
+
+        /* RESULT */
+        #hasil {
+            display: none;
+            margin-top: 25px;
+            background: #ecfdf5;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #0f766e;
+        }
+
+        .route-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .route-card h3 {
+            color: #0f766e;
+            margin-bottom: 12px;
+        }
+
+        .route-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #555;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        th,
+        td {
+            padding: 17px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #0f766e;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f0fdfa;
+        }
+
+        .status {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #134e4a;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 5%;
+            }
+
+            nav ul {
+                gap: 12px;
+                font-size: 13px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .search-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .route-info {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        body.dark-mode {
+            background: #111827;
+            color: #f9fafb;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .route-card,
+        body.dark-mode .search-box,
+        body.dark-mode table {
+            background: #1f2937;
+            color: #f9fafb;
+        }
+
+        body.dark-mode .title h2,
+        body.dark-mode .card h3,
+        body.dark-mode .route-card h3 {
+            color: #5eead4;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select {
+            background: #374151;
+            color: white;
+            border-color: #4b5563;
+        }
+
+        body.dark-mode #hasil {
+            background: #1f2937;
+            color: white;
+        }
+
+        body.dark-mode #detailRute1,
+        body.dark-mode #detailRute2,
+        body.dark-mode #detailRute3 {
+            background: #374151 !important;
+            color: white !important;
+        }
+
+        body.dark-mode tr:hover {
+            background: #374151 !important;
+        }
+
+        body.dark-mode td {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">🚌 Transit<span>Kita</span></div>
+
+        <ul>
+            <li><a onclick="showPage('home')">Home</a></li>
+            <li><a onclick="showPage('rute')">Rute</a></li>
+            <li><a onclick="showPage('jadwal')">Jadwal</a></li>
+            <li><a onclick="showPage('halte')">Halte</a></li>
+            <li><a onclick="showPage('layanan')">Layanan</a></li>
+            <li><a onclick="toggleDarkMode()">🌙</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- ================= HOME ================= -->
+    <section id="home" class="page active">
+
+        <div class="hero">
+            <h1>Perjalanan Lebih Mudah</h1>
+            <p>
+                Temukan rute dan jadwal transportasi umum
+                dengan mudah menggunakan TransitKita.
+            </p>
+
+            <div class="search-box">
+
+                <h2 style="margin-bottom:20px;">
+                    🔎 Cari Rute Perjalanan
+                </h2>
+
+                <div class="search-inputs">
+
+                    <input type="text" id="asal" placeholder="📍 Lokasi keberangkatan">
+
+                    <input type="text" id="tujuan" placeholder="🏁 Lokasi tujuan">
+
+                    <button onclick="cariRute()">
+                        Cari Rute
+                    </button>
+
+                </div>
+
+                <div id="hasil"></div>
+
+            </div>
+        </div>
+
+
+        <div class="container">
+
+            <div class="title">
+                <h2>Layanan TransitKita</h2>
+                <p>
+                    Informasi transportasi yang mudah dan praktis.
+                </p>
+            </div>
+
+            <div class="cards">
+
+                <div class="card">
+                    <div class="icon">🗺️</div>
+                    <h3>Cari Rute</h3>
+                    <p>
+                        Temukan rute transportasi dari lokasi
+                        keberangkatan menuju tujuanmu.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="icon">🕐</div>
+                    <h3>Jadwal</h3>
+                    <p>
+                        Lihat jadwal keberangkatan transportasi
+                        agar tidak perlu menunggu terlalu lama.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="icon">📍</div>
+                    <h3>Informasi Halte</h3>
+                    <p>
+                        Ketahui halte yang dilewati dalam
+                        perjalananmu.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RUTE ================= -->
+    <section id="rute" class="page">
+
+        <div class="container">
+
+            <div class="title">
+                <h2>🗺️ Daftar Rute</h2>
+                <p>Pilih rute transportasi yang tersedia.</p>
+            </div>
+
+
+            <div class="route-card">
+
+                <h3>🚌 Rute 01 - Terminal A → Pusat Kota</h3>
+
+                <p>
+                    Terminal A → Pasar Baru → Alun-Alun →
+                    Pusat Kota
+                </p>
+                <button
+                    onclick="document.getElementById('detailRute1').style.display = document.getElementById('detailRute1').style.display === 'none' ? 'block' : 'none';"
+                    style="margin-top: 15px;">
+                    📍 Lihat Detail Rute
+                </button>
+
+                <div id="detailRute1"
+                    style="display: none; margin-top: 15px; padding: 15px; background: #f0fdfa; border-radius: 10px;">
+                    <h4 style="color: #0f766e;">📍 Detail Perjalanan</h4>
+                    <p style="margin-top: 10px;">🚌 Terminal A</p>
+                    <p>↓</p>
+                    <p>📍 Pasar Baru</p>
+                    <p>↓</p>
+                    <p>📍 Alun-Alun</p>
+                    <p>↓</p>
+                    <p>🏁 Pusat Kota</p>
+                </div>
+
+                <div class="route-info">
+                    <span>⏱️ Estimasi: 30 menit</span>
+                    <span>💰 Tarif: Rp5.000</span>
+                </div>
+
+            </div>
+
+
+            <div class="route-card">
+
+                <h3>🚌 Rute 02 - Terminal B → Kampus</h3>
+
+                <p>
+                    Terminal B → Pasar Lama → Sekolah →
+                    Kampus
+                </p>
+                <button
+                    onclick="document.getElementById('detailRute2').style.display = document.getElementById('detailRute2').style.display === 'none' ? 'block' : 'none';"
+                    style="margin-top: 15px;">
+                    📍 Lihat Detail Rute
+                </button>
+
+                <div id="detailRute2"
+                    style="display: none; margin-top: 15px; padding: 15px; background: #f0fdfa; border-radius: 10px;">
+                    <h4 style="color: #0f766e;">📍 Detail Perjalanan</h4>
+                    <p style="margin-top: 10px;">🚌 Terminal B</p>
+                    <p>↓</p>
+                    <p>📍 Pasar Lama</p>
+                    <p>↓</p>
+                    <p>🏫 Sekolah</p>
+                    <p>↓</p>
+                    <p>🏁 Kampus</p>
+                </div>
+                <div class="route-info">
+                    <span>⏱️ Estimasi: 25 menit</span>
+                    <span>💰 Tarif: Rp4.000</span>
+                </div>
+
+            </div>
+
+
+            <div class="route-card">
+
+                <h3>🚌 Rute 03 - Stasiun → Terminal A</h3>
+
+                <p>
+                    Stasiun → Mall → Alun-Alun →
+                    Terminal A
+                </p>
+                <button onclick="lihatDetailRute3()" style="margin-top: 15px;">
+                    📍 Lihat Detail Rute
+                </button>
+
+                <div id="detailRute3"
+                    style="display: none; margin-top: 15px; padding: 15px; background: #f0fdfa; border-radius: 10px;">
+                    <h4 style="color: #0f766e;">📍 Detail Perjalanan</h4>
+                    <p style="margin-top: 10px;">🚉 Stasiun</p>
+                    <p>↓</p>
+                    <p>🏬 Mall</p>
+                    <p>↓</p>
+                    <p>📍 Alun-Alun</p>
+                    <p>↓</p>
+                    <p>🏁 Terminal A</p>
+                </div>
+                <div class="route-info">
+                    <span>⏱️ Estimasi: 20 menit</span>
+                    <span>💰 Tarif: Rp4.000</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= JADWAL ================= -->
+    <section id="jadwal" class="page">
+
+        <div class="container">
+
+            <div class="title">
+                <h2>🕐 Jadwal Transportasi</h2>
+                <p>
+                    Informasi jadwal keberangkatan transportasi.
+                </p>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="pilihRute"><b>🔎 Pilih Rute:</b></label>
+
+                <select id="pilihRute" onchange="filterJadwal()" style="margin-top: 10px;">
+                    <option value="semua">Semua Rute</option>
+                    <option value="Terminal A → Pusat Kota">Terminal A → Pusat Kota</option>
+                    <option value="Terminal B → Kampus">Terminal B → Kampus</option>
+                    <option value="Stasiun → Terminal A">Stasiun → Terminal A</option>
+                </select>
+            </div>
+
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Rute</th>
+                        <th>Keberangkatan</th>
+                        <th>Estimasi</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Terminal A → Pusat Kota</td>
+                        <td>07:00</td>
+                        <td>30 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Terminal A → Pusat Kota</td>
+                        <td>09:00</td>
+                        <td>30 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+                    <tr>
+                        <td>Terminal A → Pusat Kota</td>
+                        <td>12:00</td>
+                        <td>30 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Terminal A → Pusat Kota</td>
+                        <td>15:00</td>
+                        <td>30 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Terminal A → Pusat Kota</td>
+                        <td>18:00</td>
+                        <td>30 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+                    <tr>
+                        <td>Terminal B → Kampus</td>
+                        <td>07:30</td>
+                        <td>25 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Terminal B → Kampus</td>
+                        <td>10:00</td>
+                        <td>25 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+                    <tr>
+                        <td>Terminal B → Kampus</td>
+                        <td>13:00</td>
+                        <td>25 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Terminal B → Kampus</td>
+                        <td>16:00</td>
+                        <td>25 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Stasiun → Terminal A</td>
+                        <td>08:00</td>
+                        <td>20 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+                    <tr>
+                        <td>Stasiun → Terminal A</td>
+                        <td>11:00</td>
+                        <td>20 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Stasiun → Terminal A</td>
+                        <td>14:00</td>
+                        <td>20 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+
+                    <tr>
+                        <td>Stasiun → Terminal A</td>
+                        <td>17:00</td>
+                        <td>20 menit</td>
+                        <td class="status">● Terjadwal</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- ================= HALTE ================= -->
+    <section id="halte" class="page">
+        <div class="container">
+
+            <div class="title">
+                <h2>📍 Informasi Halte</h2>
+                <p>Daftar halte berdasarkan urutan perjalanan setiap rute.</p>
+                <div class="search-box" style="margin-bottom: 30px;">
+                    <div class="search-inputs">
+                        <input type="text" id="inputHalte" placeholder="🔎 Cari nama halte..."
+                            onkeydown="if(event.key === 'Enter') cariHalte()">
+
+                        <button onclick="cariHalte()">Cari</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RUTE 01 -->
+            <div class="route-card">
+                <h3>🚌 Rute 01 - Terminal A → Pusat Kota</h3>
+
+                <div class="card" style="margin-top: 15px;">
+                    <div class="icon">🚌</div>
+                    <h3>Terminal A</h3>
+                    <p>Titik awal Rute 01.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">📍</div>
+                    <h3>Pasar Baru</h3>
+                    <p>Titik pemberhentian Rute 01.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">📍</div>
+                    <h3>Alun-Alun</h3>
+                    <p>Titik pemberhentian Rute 01.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">🏙️</div>
+                    <h3>Pusat Kota</h3>
+                    <p>Titik akhir Rute 01.</p>
+                </div>
+            </div>
+
+
+            <!-- RUTE 02 -->
+            <div class="route-card">
+                <h3>🚌 Rute 02 - Terminal B → Kampus</h3>
+
+                <div class="card" style="margin-top: 15px;">
+                    <div class="icon">🚌</div>
+                    <h3>Terminal B</h3>
+                    <p>Titik awal Rute 02.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">📍</div>
+                    <h3>Pasar Lama</h3>
+                    <p>Titik pemberhentian Rute 02.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">🏫</div>
+                    <h3>Sekolah</h3>
+                    <p>Titik pemberhentian Rute 02.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">🏫</div>
+                    <h3>Kampus</h3>
+                    <p>Titik akhir Rute 02.</p>
+                </div>
+            </div>
+
+
+            <!-- RUTE 03 -->
+            <div class="route-card">
+                <h3>🚉 Rute 03 - Stasiun → Terminal A</h3>
+
+                <div class="card" style="margin-top: 15px;">
+                    <div class="icon">🚉</div>
+                    <h3>Stasiun</h3>
+                    <p>Titik awal Rute 03.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">🏬</div>
+                    <h3>Mall</h3>
+                    <p>Titik pemberhentian Rute 03.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">📍</div>
+                    <h3>Alun-Alun</h3>
+                    <p>Titik pemberhentian Rute 03.</p>
+                </div>
+
+                <div style="text-align:center; font-size:25px; margin:10px;">↓</div>
+
+                <div class="card">
+                    <div class="icon">🚌</div>
+                    <h3>Terminal A</h3>
+                    <p>Titik akhir Rute 03.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- ================= LAYANAN ================= -->
+    <section id="layanan" class="page">
+
+        <div class="container">
+
+            <div class="title">
+                <h2>🚌 Layanan TransitKita</h2>
+                <p>Informasi transportasi yang mudah dan praktis.</p>
+            </div>
+
+            <div class="cards">
+
+                <div class="card" onclick="showPage('rute')" style="cursor: pointer;">
+                    <div class="icon">🗺️</div>
+                    <h3>Informasi Rute</h3>
+                    <p>
+                        Temukan rute transportasi umum sesuai dengan
+                        lokasi keberangkatan dan tujuan.
+                    </p>
+                </div>
+
+                <div class="card" onclick="showPage('jadwal')" style="cursor: pointer;">
+                    <div class="icon">🕐</div>
+                    <h3>Jadwal Transportasi</h3>
+                    <p>
+                        Lihat informasi jadwal keberangkatan
+                        transportasi dengan mudah.
+                    </p>
+                </div>
+
+                <div class="card" onclick="showPage('halte')" style="cursor: pointer;">
+                    <div class="icon">📍</div>
+                    <h3>Informasi Halte</h3>
+                    <p>
+                        Ketahui lokasi halte dan titik pemberhentian
+                        yang tersedia di setiap rute.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 TransitKita</p>
+        <p>Solusi informasi transportasi untuk masyarakat.</p>
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        function showPage(pageId) {
+
+            // Sembunyikan semua halaman
+            const pages = document.querySelectorAll(".page");
+
+            pages.forEach(function (page) {
+                page.classList.remove("active");
+            });
+
+            // Tampilkan halaman yang dipilih
+            document.getElementById(pageId)
+                .classList.add("active");
+
+            // Kembali ke atas
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+
+        function cariRute() {
+
+            const asal = document.getElementById("asal").value.trim();
+            const tujuan = document.getElementById("tujuan").value.trim();
+            const hasil = document.getElementById("hasil");
+
+            if (asal === "" || tujuan === "") {
+
+                hasil.style.display = "block";
+
+                hasil.innerHTML = `
+            ⚠️ Silakan isi lokasi keberangkatan dan tujuan.
+        `;
+
+                return;
+            }
+
+            const asalLower = asal.toLowerCase().replace(/\s*-\s*/g, "-");
+            const tujuanLower = tujuan.toLowerCase().replace(/\s*-\s*/g, "-");
+
+            let rute = null;
+
+            if (
+                asalLower === "terminal a" &&
+                (
+                    tujuanLower === "pasar baru" ||
+                    tujuanLower === "alun-alun" ||
+                    tujuanLower === "pusat kota"
+                )
+            ) {
+                rute = {
+                    nama: "Rute 01",
+                    perjalanan: "Terminal A → Pasar Baru → Alun-Alun → Pusat Kota",
+                    waktu: "30 menit",
+                    tarif: "Rp5.000"
+                };
+            }
+
+            else if (
+                asalLower === "terminal b" &&
+                (
+                    tujuanLower === "pasar lama" ||
+                    tujuanLower === "sekolah" ||
+                    tujuanLower === "kampus"
+                )
+            ) {
+                rute = {
+                    nama: "Rute 02",
+                    perjalanan: "Terminal B → Pasar Lama → Sekolah → Kampus",
+                    waktu: "25 menit",
+                    tarif: "Rp4.000"
+                };
+            }
+
+            else if (
+                asalLower === "stasiun" &&
+                (
+                    tujuanLower === "mall" ||
+                    tujuanLower === "alun-alun" ||
+                    tujuanLower === "terminal a"
+                )
+            ) {
+                rute = {
+                    nama: "Rute 03",
+                    perjalanan: "Stasiun → Mall → Alun-Alun → Terminal A",
+                    waktu: "20 menit",
+                    tarif: "Rp4.000"
+                };
+            }
+
+            if (rute === null) {
+
+                hasil.style.display = "block";
+
+                hasil.innerHTML = `
+            <h3>❌ Rute tidak ditemukan</h3>
+
+            <p style="margin-top:10px;">
+                Belum tersedia rute dari
+                <b>${asal}</b>
+                menuju
+                <b>${tujuan}</b>.
+            </p>
+        `;
+
+                return;
+            }
+
+            hasil.style.display = "block";
+
+            hasil.innerHTML = `
+        <h3>✅ ${rute.nama} ditemukan!</h3>
+
+        <p style="margin-top:10px;">
+            <b>${asal}</b> → <b>${tujuan}</b>
+        </p>
+
+        <p style="margin-top:10px;">
+            🚌 <b>Perjalanan:</b><br>
+            ${rute.perjalanan}
+        </p>
+
+        <p style="margin-top:5px;">
+            ⏱️ <b>Estimasi:</b> ${rute.waktu}
+        </p>
+
+        <p style="margin-top:5px;">
+            💰 <b>Tarif:</b> ${rute.tarif}
+        </p>
+    `;
+        }
+
+        // DATA RUTE
+        const daftarRute = [
+            {
+                asal: "Terminal A",
+                tujuan: "Pusat Kota",
+                rute: "Terminal A → Pasar Baru → Alun-Alun → Pusat Kota",
+                waktu: "30 menit",
+                tarif: "Rp5.000"
+            },
+            {
+                asal: "Terminal B",
+                tujuan: "Kampus",
+                rute: "Terminal B → Pasar Lama → Sekolah → Kampus",
+                waktu: "25 menit",
+                tarif: "Rp4.000"
+            },
+            {
+                asal: "Stasiun",
+                tujuan: "Terminal A",
+                rute: "Stasiun → Mall → Alun-Alun → Terminal A",
+                waktu: "20 menit",
+                tarif: "Rp4.000"
+            }
+        ];
+
+        function filterJadwal() {
+            const pilihan = document.getElementById("pilihRute").value;
+            const tabel = document.querySelector("table");
+            const baris = tabel.querySelectorAll("tbody tr");
+
+            baris.forEach(function (baris) {
+                const namaRute = baris.cells[0].textContent.trim();
+
+                if (pilihan === "semua" || namaRute === pilihan) {
+                    baris.style.display = "";
+                } else {
+                    baris.style.display = "none";
+                }
+            });
+        }
+        function lihatDetailRute1() {
+            const detail = document.getElementById("detailRute1");
+
+            if (detail.style.display === "none") {
+                detail.style.display = "block";
+            } else {
+                detail.style.display = "none";
+            }
+        }
+        function lihatDetailRute2() {
+            const detail = document.getElementById("detailRute2");
+
+            if (detail.style.display === "none") {
+                detail.style.display = "block";
+            } else {
+                detail.style.display = "none";
+            }
+        }
+        function lihatDetailRute1() {
+            // kode Rute 01
+        }
+
+        function lihatDetailRute2() {
+            // kode Rute 02
+        }
+
+        function lihatDetailRute3() {
+            const detail = document.getElementById("detailRute3");
+
+            if (detail.style.display === "none") {
+                detail.style.display = "block";
+            } else {
+                detail.style.display = "none";
+            }
+        }
+        function cariHalte() {
+            const keyword = document.getElementById("inputHalte").value.toLowerCase().trim();
+            const kartu = document.querySelectorAll("#halte .card");
+
+            kartu.forEach(function (card) {
+                const namaHalte = card.textContent.toLowerCase();
+
+                if (namaHalte.includes(keyword)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+    </script>
+
+</body>
+
+</html>
